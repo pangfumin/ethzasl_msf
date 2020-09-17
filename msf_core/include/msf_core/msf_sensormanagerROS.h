@@ -200,6 +200,7 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
   virtual void PublishStateAfterPropagation(
       const shared_ptr<EKFState_T>& state) const {
 
+    std::cout << " PublishStateAfterPropagation " << std::endl;
     if (pubPoseCrtl_.getNumSubscribers() || pubPose_.getNumSubscribers() || pubOdometry_.getNumSubscribers()) {
       static int msg_seq = 0;
 
@@ -209,6 +210,7 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
       msgPose.header.frame_id = msf_output_frame_;
       state->ToPoseMsg(msgPose);
       pubPose_.publish(msgPose);
+      std::cout << "pubPose_: " << std::endl;
 
 
       nav_msgs::Odometry msgOdometry;
@@ -321,6 +323,8 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
     state->ToFullStateMsg(msgState);
     pubState_.publish(msgState);
 
+
+
     if (pubPoseAfterUpdate_.getNumSubscribers()) {
       // Publish pose after correction with covariance.
       geometry_msgs::PoseWithCovarianceStamped msgPose;
@@ -330,6 +334,7 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
 
       state->ToPoseMsg(msgPose);
       pubPoseAfterUpdate_.publish(msgPose);
+      
     }
 
     {
