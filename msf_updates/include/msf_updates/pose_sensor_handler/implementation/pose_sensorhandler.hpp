@@ -108,6 +108,8 @@ PoseSensorHandler<MEASUREMENT_TYPE, MANAGER_TYPE>::PoseSensorHandler(
         new msf_updates::PoseDistorter(meanpos, stddevpos, meanatt, stddevatt,
                                        distortscale_mean, distortscale_stddev));
   }
+
+    ofs_meas_.open("/home/pang/msf_meas.txt");
 }
 
 template<typename MEASUREMENT_TYPE, typename MANAGER_TYPE>
@@ -227,6 +229,16 @@ void PoseSensorHandler<MEASUREMENT_TYPE, MANAGER_TYPE>::MeasurementCallback(
   pose->pose.pose.orientation.x = msg->transform.rotation.x;
   pose->pose.pose.orientation.y = msg->transform.rotation.y;
   pose->pose.pose.orientation.z = msg->transform.rotation.z;
+
+
+    ofs_meas_ << pose->header.stamp.toNSec()
+              << " " << pose->pose.pose.position.x
+              << " " << pose->pose.pose.position.y
+              << " " << pose->pose.pose.position.z
+              << " " << pose->pose.pose.orientation.w
+              << " " << pose->pose.pose.orientation.x
+              << " " << pose->pose.pose.orientation.y
+              << " " << pose->pose.pose.orientation.z << std::endl;
 
   ProcessPoseMeasurement(pose);
 }

@@ -24,6 +24,7 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <msf_updates/PoseDistorter.h>
+#include <fstream>
 
 namespace msf_pose_sensor {
 
@@ -62,6 +63,9 @@ class PoseSensorHandler : public msf_core::SensorHandler<
       const geometry_msgs::PoseWithCovarianceStampedConstPtr & msg);
   void MeasurementCallback(const geometry_msgs::PoseStampedConstPtr & msg);
   void MeasurementCallback(const geometry_msgs::TransformStampedConstPtr & msg);
+
+
+    std::ofstream  ofs_meas_;
 
  public:
   typedef MEASUREMENT_TYPE measurement_t;

@@ -19,6 +19,7 @@
 
 #include <ros/ros.h>
 #include <dynamic_reconfigure/server.h>
+#include <fstream>
 
 // Message includes.
 #include <sensor_fusion_comm/DoubleArrayStamped.h>
@@ -123,9 +124,16 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
       topicsStr += ("\t\t" + topics.at(i) + "\n");
 
     MSF_INFO_STREAM(""<< topicsStr);
+
+
+      ofs_est_.open("/home/pang/msf_est.txt");
+      ofs_propagated_.open("/home/pang/msf_propagate.txt");
+
   }
 
   virtual ~MSF_SensorManagerROS() {
+      ofs_est_.close();
+      ofs_propagated_.close();
     delete reconfServer_;
   }
 
@@ -200,8 +208,7 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
   virtual void PublishStateAfterPropagation(
       const shared_ptr<EKFState_T>& state) const {
 
-    std::cout << " PublishStateAfterPropagation " << std::endl;
-    if (pubPoseCrtl_.getNumSubscribers() || pubPose_.getNumSubscribers() || pubOdometry_.getNumSubscribers()) {
+
       static int msg_seq = 0;
 
       geometry_msgs::PoseWithCovarianceStamped msgPose;
@@ -210,7 +217,9 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
       msgPose.header.frame_id = msf_output_frame_;
       state->ToPoseMsg(msgPose);
       pubPose_.publish(msgPose);
-      std::cout << "pubPose_: " << std::endl;
+
+
+
 
 
       nav_msgs::Odometry msgOdometry;
@@ -221,12 +230,21 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
       state->ToOdometryMsg(msgOdometry);
       pubOdometry_.publish(msgOdometry);
 
+
+        ofs_propagated_ << msgOdometry.header.stamp.toNSec() << " " << msgOdometry.pose.pose.position.x
+                        << " " << msgOdometry.pose.pose.position.y
+                        << " " << msgOdometry.pose.pose.position.z
+                        << " " << msgOdometry.pose.pose.orientation.w
+                        << " " << msgOdometry.pose.pose.orientation.x
+                        << " " << msgOdometry.pose.pose.orientation.y
+                        << " " << msgOdometry.pose.pose.orientation.z << std::endl;
+
       sensor_fusion_comm::ExtState msgPoseCtrl;
       msgPoseCtrl.header = msgPose.header;
       state->ToExtStateMsg(msgPoseCtrl);
       pubPoseCrtl_.publish(msgPoseCtrl);
 
-    }
+
   }
 
   virtual void PublishStateAfterUpdate(
@@ -325,7 +343,6 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
 
 
 
-    if (pubPoseAfterUpdate_.getNumSubscribers()) {
       // Publish pose after correction with covariance.
       geometry_msgs::PoseWithCovarianceStamped msgPose;
       msgPose.header.stamp = ros::Time(state->time);
@@ -334,8 +351,16 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
 
       state->ToPoseMsg(msgPose);
       pubPoseAfterUpdate_.publish(msgPose);
+
+        ofs_est_ << msgPose.header.stamp.toNSec() << " " << msgPose.pose.pose.position.x
+                 << " " << msgPose.pose.pose.position.y
+                 << " " << msgPose.pose.pose.position.z
+                 << " " << msgPose.pose.pose.orientation.w
+                 << " " << msgPose.pose.pose.orientation.x
+                 << " " << msgPose.pose.pose.orientation.y
+                 << " " << msgPose.pose.pose.orientation.z << std::endl;
       
-    }
+
 
     {
       tf::Transform transform;
@@ -377,6 +402,9 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
     }
     msg_seq++;
   }
+
+    mutable  std::ofstream ofs_propagated_;
+    mutable  std::ofstream ofs_est_;
 };
 
 }

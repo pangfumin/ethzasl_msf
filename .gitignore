@@ -28,4 +28,7 @@ documentation
 *.wikidoc
 *.cfgc
 cfg/__init__.py
-
+msf_core/cmake-build-debug
+msf_updates/cmake-build-debug
+msf_core/.idea
+msf_updates/.idea
