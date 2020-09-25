@@ -252,6 +252,7 @@ struct GenericState_T {
    * \note It does not set the header.
    */
   void GetCoreCovariance(sensor_fusion_comm::DoubleMatrixStamped& cov);
+  void GetCoreCovariance(Eigen::MatrixXd& cov);
 
   /**
    * \brief Assembles a DoubleMatrixStamped message from the aux error state

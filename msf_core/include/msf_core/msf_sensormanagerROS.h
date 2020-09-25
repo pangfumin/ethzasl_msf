@@ -127,12 +127,16 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
 
 
       ofs_est_.open("/home/pang/msf_est.txt");
+      ofs_full_state_.open("/home/pang/msf_full_state.txt");
+      ofs_full_sigma_.open("/home/pang/msf_full_sigma.txt");
       ofs_propagated_.open("/home/pang/msf_propagate.txt");
 
   }
 
   virtual ~MSF_SensorManagerROS() {
       ofs_est_.close();
+      ofs_full_state_.close();
+      ofs_full_sigma_.close();
       ofs_propagated_.close();
     delete reconfServer_;
   }
@@ -359,7 +363,26 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
                  << " " << msgPose.pose.pose.orientation.x
                  << " " << msgPose.pose.pose.orientation.y
                  << " " << msgPose.pose.pose.orientation.z << std::endl;
-      
+
+      ofs_full_state_ << msgPose.header.stamp.toNSec()
+                << " " << msgState.data[0]
+                << " " << msgState.data[1]
+                << " " << msgState.data[2]
+                << " " << msgState.data[3]
+                << " " << msgState.data[4]
+                << " " << msgState.data[5]
+                << " " << msgState.data[6]
+                << " " << msgState.data[7]
+                << " " << msgState.data[8]
+                << " " << msgState.data[9]
+                << " " << msgState.data[10]
+                << " " << msgState.data[11]
+                << " " << msgState.data[12]
+                << " " << msgState.data[13]
+                << " " << msgState.data[14]
+                << " " << msgState.data[15]
+                << " " << msgState.data[16] << std::endl;
+
 
 
     {
@@ -385,6 +408,30 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
       pubCovCore_.publish(msg);
     }
 
+    Eigen::MatrixXd cov;
+    state->GetCoreCovariance(cov);
+    std::cout << "GetCoreCovariance: " << cov.cols() << " " << cov.rows() << std::endl;
+
+      ofs_full_sigma_ << msgPose.header.stamp.toNSec()
+                << " " << sqrt(cov(0,0))
+                << " " << sqrt(cov(1,1))
+                << " " << sqrt(cov(2,2))
+                << " " << sqrt(cov(3,3))
+                << " " << sqrt(cov(4,4))
+                << " " << sqrt(cov(5,5))
+                << " " << sqrt(cov(6,6))
+                << " " << sqrt(cov(7,7))
+                << " " << sqrt(cov(8,8))
+                << " " << sqrt(cov(9,9))
+                << " " << sqrt(cov(10,10))
+                << " " << sqrt(cov(11,11))
+                << " " << sqrt(cov(12,12))
+                << " " << sqrt(cov(13,13))
+                << " " << sqrt(cov(14,14))
+                << " " << sqrt(cov(15,15)) << std::endl;
+
+
+
     if (pubCovAux_.getNumSubscribers()) {
       sensor_fusion_comm::DoubleMatrixStampedPtr msg(
           new sensor_fusion_comm::DoubleMatrixStamped);
@@ -405,6 +452,8 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
 
     mutable  std::ofstream ofs_propagated_;
     mutable  std::ofstream ofs_est_;
+    mutable  std::ofstream ofs_full_state_;
+    mutable  std::ofstream ofs_full_sigma_;
 };
 
 }

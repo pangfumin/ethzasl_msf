@@ -201,11 +201,32 @@ class PoseSensorManager : public msf_core::MSF_SensorManagerROS<
       q = (q_ic * q_cv.conjugate() * q_wv).conjugate();
     }
 
-    q.normalize();
-    p = p_wv + q_wv.conjugate().toRotationMatrix() * p_vc / scale
-        - q.toRotationMatrix() * p_ic;
+//      translation:
+//      x: -0.00806742675485071
+//      y: 0.01425845486876323
+//      z: -0.16356042389903125
+//      rotation:
+//      x: 0.8404042804050889
+//      y: 0.04489746469840403
+//      z: 0.5384054001569007
+//      w: -0.042714028402250095
 
-    a_m = q.inverse() * g;			/// Initial acceleration.
+
+
+
+      q.normalize();
+      p = p_wv + q_wv.conjugate().toRotationMatrix() * p_vc / scale
+          - q.toRotationMatrix() * p_ic;
+
+      std::cout << "init -------------------------------------------------------------" << std::endl;
+      q = Eigen::Quaterniond(-0.042714028402250095, 0.8404042804050889, 0.04489746469840403, 0.5384054001569007);
+      p = Eigen::Vector3d(-0.00806742675485071, 0.01425845486876323, -0.16356042389903125);
+
+
+
+      a_m = q.inverse() * g;			/// Initial acceleration.
+
+      std::cout << "a_m: " << a_m.transpose() << std::endl;
 
     // Prepare init "measurement"
     // True means that this message contains initial sensor readings.

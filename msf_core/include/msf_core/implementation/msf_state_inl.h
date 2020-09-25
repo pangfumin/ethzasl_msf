@@ -450,6 +450,21 @@ void GenericState_T<stateVector_T, StateDefinition_T>::GetCoreCovariance(
   }
 }
 
+
+template<typename stateVector_T, typename StateDefinition_T>
+void GenericState_T<stateVector_T, StateDefinition_T>::GetCoreCovariance(
+        Eigen::MatrixXd& cov) {
+
+    const int n_core = nCoreErrorStatesAtCompileTime;
+    cov = Eigen::Matrix<double, n_core, n_core>();
+    for (int row = 0; row < n_core; ++row) {
+        for (int col = 0; col < n_core; ++col) {
+            cov(row, col) = P(row, col);
+        }
+    }
+}
+
+
 template<typename stateVector_T, typename StateDefinition_T>
 void GenericState_T<stateVector_T, StateDefinition_T>::GetAuxCovariance(
     sensor_fusion_comm::DoubleMatrixStamped& cov) {
