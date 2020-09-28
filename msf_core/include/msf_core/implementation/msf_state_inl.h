@@ -74,6 +74,8 @@ inline void GenericState_T<stateVector_T, StateDefinition_T>::Correct(
       msf_tmp::CorrectState<
           const Eigen::Matrix<double, nErrorStatesAtCompileTime, 1>,
           stateVector_T>(correction));
+
+
 }
 
 // Returns the Q-block of the state at position INDEX in the state list, not

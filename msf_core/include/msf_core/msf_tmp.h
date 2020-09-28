@@ -923,14 +923,17 @@ struct CorrectState {
       startIdxInCorrection = msf_tmp::GetStartIndex<stateList_T, var_T,
           msf_tmp::CorrectionStateLengthForType>::value
     };
+
     if (OPTIONS & msf_core::correctionMultiplicative) {
       t.state_ = t.state_.cwiseProduct(
           data_.template block<var_T::sizeInCorrection_, 1>(
               startIdxInCorrection, 0));
+
     } else {
       t.state_ = t.state_
           + data_.template block<var_T::sizeInCorrection_, 1>(
               startIdxInCorrection, 0);
+      std::cout << "CorrectState normal: " << NAME << " " <<   var_T::sizeInCorrection_<< std::endl;
     }
   }
   template<int NAME, int STATE_T, int OPTIONS>
@@ -950,7 +953,11 @@ struct CorrectState {
     Eigen::Quaternion<double> qbuff_q = QuaternionFromSmallAngle(
         data_.template block<var_T::sizeInCorrection_, 1>(startIdxInCorrection,
                                                           0));
-    t.state_ = t.state_ * qbuff_q;
+    std::cout << "quaternion data_: " << data_.template block<var_T::sizeInCorrection_, 1>(startIdxInCorrection,
+                                                                                           0).transpose() << std::endl;
+    std::cout << "CorrectState cwiseProduct: " << NAME << " "<< qbuff_q.coeffs().transpose()   << std::endl;
+
+    t.state_ =  t.state_ * qbuff_q ;
     t.state_.normalize();
   }
  private:

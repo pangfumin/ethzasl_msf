@@ -183,6 +183,8 @@ void MSF_Core<EKFState_T>::ProcessIMU(
   msf_timing::DebugTimer timer_PropState("PropState");
   //propagate state and covariance
   PropagateState(lastState, currentState);
+
+
   timer_PropState.Stop();
 
   msf_timing::DebugTimer timer_PropInsertState("PropInsertState");

@@ -82,14 +82,20 @@ plot(tt, bas(:,3),  'g', tt, 3* ba_sigma(:,3), 'r', tt, -3* ba_sigma(:,3), 'r');
 
 
 
-% quaternion = data(:, 5:8);
-% euler = quat2eul(quaternion);
-% est_quaternion = est_data(:, 5:8);
-% est_euler = quat2eul(est_quaternion);
-% figure(4);
-% subplot(3,1,1)
-% plot(tt, est_euler(:,1), 'r', tt, euler(:,1),'g');
-% subplot(3,1,2)
-% plot(tt, est_euler(:,2), 'r', tt, euler(:,2),'g');
-% subplot(3,1,3)
-% plot(tt, est_euler(:,3), 'r', tt, euler(:,3),'g');
+quaternion = data(:, 5:8);
+euler = quat2eul(quaternion);
+est_quaternion = est_data(:, 5:8);
+est_euler = quat2eul(est_quaternion);
+
+propagate_quaternion = propagate_data(:, 5:8);
+propagate_euler = quat2eul(propagate_quaternion);
+
+ss = min(min(size(euler, 1), size(est_euler,1)), size(propagate_euler, 1));
+tt  =1:ss;
+figure(6);
+subplot(3,1,1)
+plot(tt, est_euler(1:ss,1), 'r', tt, euler(1:ss,1),'g', tt, propagate_euler(1:ss,1),'b');
+subplot(3,1,2)
+plot(tt, est_euler(1:ss,2), 'r', tt, euler(1:ss,2),'g', tt, propagate_euler(1:ss,2),'b');
+subplot(3,1,3)
+plot(tt, est_euler(1:ss,3), 'r', tt, euler(1:ss,3),'g', tt, propagate_euler(1:ss,3),'b');

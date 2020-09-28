@@ -30,6 +30,7 @@
 #include <sensor_fusion_comm/DoubleArrayStamped.h>
 #include <sensor_fusion_comm/DoubleMatrixStamped.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <fstream>
 
 namespace msf_core {
 
@@ -326,6 +327,8 @@ struct GenericState_T {
   template<int INDEX>
   inline void
   ClearCrossCov();
+
+//  std::ofstream ofs_;
 };
 
 /**

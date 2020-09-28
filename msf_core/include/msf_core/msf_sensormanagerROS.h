@@ -223,6 +223,14 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
       pubPose_.publish(msgPose);
 
 
+      ofs_propagated_ << msgPose.header.stamp.toNSec()
+                      << " " << msgPose.pose.pose.position.x
+                      << " " << msgPose.pose.pose.position.y
+                      << " " << msgPose.pose.pose.position.z
+                      << " " << msgPose.pose.pose.orientation.w
+                      << " " << msgPose.pose.pose.orientation.x
+                      << " " << msgPose.pose.pose.orientation.y
+                      << " " << msgPose.pose.pose.orientation.z << std::endl;
 
 
 
@@ -235,13 +243,6 @@ struct MSF_SensorManagerROS : public msf_core::MSF_SensorManager<EKFState_T> {
       pubOdometry_.publish(msgOdometry);
 
 
-        ofs_propagated_ << msgOdometry.header.stamp.toNSec() << " " << msgOdometry.pose.pose.position.x
-                        << " " << msgOdometry.pose.pose.position.y
-                        << " " << msgOdometry.pose.pose.position.z
-                        << " " << msgOdometry.pose.pose.orientation.w
-                        << " " << msgOdometry.pose.pose.orientation.x
-                        << " " << msgOdometry.pose.pose.orientation.y
-                        << " " << msgOdometry.pose.pose.orientation.z << std::endl;
 
       sensor_fusion_comm::ExtState msgPoseCtrl;
       msgPoseCtrl.header = msgPose.header;
