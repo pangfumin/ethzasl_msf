@@ -26,7 +26,7 @@ generate_dynamic_reconfigure_options(
 
 catkin_package(
     DEPENDS
-    CATKIN_DEPENDS roscpp msf_core geometry_msgs sensor_fusion_comm
+    CATKIN_DEPENDS roscpp msf_core geometry_msgs sensor_fusion_comm rosbag
     INCLUDE_DIRS include ${catkin_INCLUDE_DIRS}
     LIBRARIES pose_distorter
 )

@@ -171,7 +171,17 @@ void PoseSensorHandler<MEASUREMENT_TYPE, MANAGER_TYPE>::ProcessPoseMeasurement(
   z_p_ = meas->z_p_;  //store this for the init procedure
   z_q_ = meas->z_q_;
 
-  this->manager_.msf_core_->AddMeasurement(meas);
+    ofs_meas_ << msg->header.stamp.toNSec()
+              << " " << z_p_.x()
+              << " " << z_p_.y()
+              << " " << z_p_.z()
+              << " " << z_q_.w()
+              << " " << z_q_.x()
+              << " " << z_q_.y()
+              << " " << z_q_.z() << std::endl;
+
+
+    this->manager_.msf_core_->AddMeasurement(meas);
 }
 template<typename MEASUREMENT_TYPE, typename MANAGER_TYPE>
 void PoseSensorHandler<MEASUREMENT_TYPE, MANAGER_TYPE>::MeasurementCallback(
