@@ -67,6 +67,8 @@ class PoseSensorHandler : public msf_core::SensorHandler<
 
     std::ofstream  ofs_meas_;
 
+    int cnt_ = 0;
+
  public:
   typedef MEASUREMENT_TYPE measurement_t;
   PoseSensorHandler(MANAGER_TYPE& meas, std::string topic_namespace,

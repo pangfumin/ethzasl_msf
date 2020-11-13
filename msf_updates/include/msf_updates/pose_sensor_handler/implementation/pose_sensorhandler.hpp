@@ -187,6 +187,12 @@ template<typename MEASUREMENT_TYPE, typename MANAGER_TYPE>
 void PoseSensorHandler<MEASUREMENT_TYPE, MANAGER_TYPE>::MeasurementCallback(
     const geometry_msgs::PoseWithCovarianceStampedConstPtr & msg) {
 
+
+    if (cnt_ ++ %  100 != 0) {
+        return;
+    }
+
+    std::cout << "measuring:  -----------------------------  " << std::endl;
   this->SequenceWatchDog(msg->header.seq,
                          subPoseWithCovarianceStamped_.getTopic());
   MSF_INFO_STREAM_ONCE(
